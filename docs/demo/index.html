@@ -1,0 +1,235 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>nega-datatable demo</title>
+
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+
+    <script type="module">import "../node_modules/@polymer/iron-demo-helpers/demo-pages-shared-styles.js";
+import "../node_modules/@polymer/iron-demo-helpers/demo-snippet.js";
+import '../nega-datatable.js';
+import { LitElement, html } from "../node_modules/lit-element/lit-element.js";
+
+class CheckboxColumn extends LitElement {
+  render() {
+    return html`
+            <label>
+              <input type="checkbox" />
+              <span><slot></slot></span>
+            </label>
+            `;
+  }
+
+}
+
+window.customElements.define('checkbox-column', CheckboxColumn);
+
+class SpecialNegaColumn extends LitElement {
+  constructor() {
+    super();
+    this.negaItem = {};
+  }
+
+  static get properties() {
+    return {
+      negaItem: Object
+    };
+  }
+
+  render() {
+    return html`
+            <span>${this.negaItem.age} year${this.negaItem.age > 1 ? 's' : ''} old</span>
+            `;
+  }
+
+}
+
+window.customElements.define('special-nega-column', SpecialNegaColumn);</script>
+
+    </head><custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles">
+        nega-datatable#complex {
+          --nega-datatable-selected-row: {
+            background: rgba(0, 0, 255, 0.2);
+          }
+        }
+
+        nega-datatable#styled {
+          --nega-datatable-header-row: {
+            background: rgba(0, 0, 0, 0.05);
+          }
+
+          --nega-datatable-header-cell: {
+            font-size: 18px;
+            text-align: left;
+            text-transform: capitalize;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            user-select: none;
+          }
+
+          --nega-datatable-even-row: {
+            background: rgba(0, 0, 0, 0.05)
+          }
+          --nega-datatable-even-column: {
+            background: rgba(0, 0, 0, 0.05)
+          }
+        }
+      </style>
+    </custom-style>
+  
+  
+    <a href="https://kennethklee.github.io/nega-datatable/demo/">
+      <code>If you are viewing from webcomponents.org, the demo may not work due to incompatibilities with lit-html and the site. Click here to visit the working demo.</code>
+    </a>
+
+    <article class="vertical-section-container centered">
+      <h3>Basic nega-datatable demo</h3>
+      <p>Column cells are defined by elements with the <code>slot</code> property. Headers are automatically generated, unless there's a <code>slot</code> postfixed with <code>:header</code>.</p>
+      <demo-snippet>
+        <template>
+          <nega-datatable id="basic">
+            <span slot="name"></span>
+            
+            <span slot="colour:header">Favourite Colour</span>
+            <span slot="colour"></span>
+          </nega-datatable>
+          
+          <script>
+            var basicElement = document.getElementById('basic')
+
+            basicElement.items = [
+              {name: 'Kenneth', colour: 'green'},
+              {name: 'Ben', colour: 'red'},
+              {name: 'Sasha', colour: 'orange'},
+            ]
+          </script>
+        </template>
+      </demo-snippet>
+    </article>
+
+    <article class="vertical-section-container centered">
+      <h3>Complex nega-datatable demo</h3>
+      <p>This datatable shown to be, selectable, use a custom web component with mixed data, and a simple web component.</p>
+      <p>Notice how the custom web component with the checkbox does not select the row. This is because row selection is manual, and customizable.</p>
+      <demo-snippet>
+        <template>
+          <script type="for demo purposes only">
+            import {LitElement, html} from 'lit-element'
+
+            class CheckboxColumn extends LitElement {
+              render() {
+                return html`
+                  <label>
+                    <input type="checkbox" />
+                    <span><slot></slot></span>
+                  </label>
+                  `
+              }
+            }
+            window.customElements.define('checkbox-column', CheckboxColumn)
+
+            class SpecialNegaColumn extends LitElement {
+              constructor() {
+                super()
+                this.negaItem = {}
+              }
+              static get properties() {
+                return {
+                  negaItem: Object
+                }
+              }
+              render() {
+                return html`
+                  <span>${this.negaItem.age} year${this.negaItem.age > 1 ? 's' : ''} old</span>
+                  `
+              }
+            }
+            window.customElements.define('special-nega-column', SpecialNegaColumn)
+          </script>
+
+          <nega-datatable id="complex">
+            <input slot="id:header" type="checkbox" onclick="complexElement.items.forEach(item => complexElement.toggle(item, this.checked))">
+            <input slot="id" slot-prop="value" type="checkbox">
+
+            <span slot="name:header">Child's Name</span>
+            <span slot="name"></span>
+
+            <span slot="mixed-data:header">Age</span>
+            <special-nega-column slot="mixed-data"></special-nega-column>
+            
+            <checkbox-column id="likes" slot="likes"></checkbox-column>
+          </nega-datatable>
+          
+          <script>
+            var complexElement = document.getElementById('complex')
+            complexElement.addEventListener('clickItem', function (ev) {
+              if (ev.target.tagName === 'CHECKBOX-COLUMN') return;  // Ignore the checkbox column
+
+              complexElement.toggle(ev.detail.value)
+            })
+            
+            complexElement.addEventListener('select', function (ev) {
+              complexElement.shadowRoot.querySelector(`input[value="${ev.detail.item.id}"]`).checked = ev.detail.value
+            })
+            complexElement.items = [
+              {id: 1, name: 'aaron', age: 1, likes: 'dogs'},
+              {id: 2, name: 'bart', age: 8, likes: 'birds'},
+              {id: 3, name: 'cali', age: 12, likes: 'tigers'},
+            ]
+          </script>
+        </template>
+      </demo-snippet>
+    </article>
+
+    <article class="vertical-section-container centered">
+      <h3>Styled nega-datatable demo</h3>
+      <p>The table is also easy to style.</p>
+      <demo-snippet>
+        <template>
+          <style>
+            nega-datatable#styled {
+              --nega-datatable-header-row: {
+                background: rgba(0, 0, 0, 0.05);
+              }
+
+              --nega-datatable-header-cell: {
+                font-size: 18px;
+                text-align: left;
+                text-transform: capitalize;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+                user-select: none;
+              }
+
+              --nega-datatable-even-row: {
+                background: rgba(0, 0, 0, 0.05)
+              }
+              --nega-datatable-even-column: {
+                background: rgba(0, 0, 0, 0.05)
+              }
+            }
+          </style>
+
+          <nega-datatable id="styled">
+            <span slot="username"></span>
+            <span slot="displayName"></span>
+            <span slot="colour"></span>
+            
+            <input slot="isStarred" slot-prop="checked" type="checkbox" readonly="" disabled="">
+          </nega-datatable>
+          
+          <script>
+            var styledElement = document.getElementById('styled')
+
+            styledElement.items = [
+              {username: 'kenneth', displayName: 'Kenneth', colour: 'green', isStarred: true},
+              {username: 'londonbridge', displayName: 'Ben', colour: 'red', isStarred: false},
+              {username: 'fastgurl222', displayName: 'Sasha', colour: 'orange', isStarred: true},
+            ]
+          </script>
+        </template>
+      </demo-snippet>
+    </article>
+  
+
+</html>
