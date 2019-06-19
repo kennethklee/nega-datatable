@@ -1,13 +1,14 @@
 import {LitElement, html} from 'lit-element'
 
 /**
+`nega-datatable`
 Simple data table component.
 
 Slotted elements define headers and columns. Data is populated by the `items` property.
 
 The element's `slot` attribute directly coresponds to the item key. The `innerText` is populated by the cell value unless there is a `slot-prop` attribute to signal which element attribute to fill.
 
-Slots postfixed with `:header` defines the header element.
+Slots postfixed with `:header` defines the header element. Without one, the slot name is used, or `nega-title` attribute if provided.
 
 As a special case, if the column has a `negaItem` property, that property will be populated with the entire item json to use as the element sees fit.
 
@@ -32,13 +33,7 @@ Custom property | Description | Default
 @element nega-datatable
 @demo demo/index.html
 */
-/**
- * `nega-datatable`
- * Data table component
- *
- * @customElement
- * @demo demo/index.html
- */
+
 class NegaDataTable extends LitElement {
   static get properties() {
     return {
@@ -66,14 +61,10 @@ class NegaDataTable extends LitElement {
         this.columns.push(element)
       }
 
-      if (element.hasAttribute('data-title') && element.getAttribute('data-title')) {
-        element['data-title'] = element.getAttribute('data-title')
+      if (element.hasAttribute('nega-title') && element.getAttribute('nega-title')) {
+        element['nega-title'] = element.getAttribute('nega-title')
       } else if (element.hasAttribute('slot') && element.getAttribute('slot')) {
-        element['data-title'] = element.getAttribute('slot')
-      }
-      if (element.tagName === 'TEMPLATE') {
-        // Make copies of templates in-memory so that outside changes are difficult
-        element['data-template'] = element.cloneNode(true)
+        element['nega-title'] = element.getAttribute('slot')
       }
     })
   }
@@ -157,7 +148,7 @@ class NegaDataTable extends LitElement {
     }
 
     return html`
-      ${column['data-title'] || ''}
+      ${column['nega-title'] || ''}
     `
   }
 
