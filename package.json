@@ -1,7 +1,7 @@
 {
   "name": "nega-datatable",
   "version": "0.0.1",
-  "description": "Data table webcomponent",
+  "description": "Simple data table webcomponent",
   "main": "nega-datatable.js",
   "scripts": {
     "start": "polymer serve --npm -H 0",
