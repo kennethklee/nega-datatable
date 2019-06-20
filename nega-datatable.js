@@ -26,8 +26,8 @@ The following CSS ::parts are available for styling:
 * odd-row
 * selected-row
 * row
-* even-cell
-* odd-cell
+* even-column
+* odd-column
 * cell
 
 @element nega-datatable
@@ -79,8 +79,8 @@ class NegaDataTable extends LitElement {
     <table border="0" cellspacing="0">
       <thead>
         <tr part="header-row">
-          ${Array.from(this.columns).map(column => html`
-          <th part="header-cell">${this.renderColumnHeader(column)}</th>
+          ${Array.from(this.columns).map((column, colIndex) => html`
+          <th part="header-cell ${colIndex % 2 ? 'even-column' : 'odd-column'}">${this.renderColumnHeader(column)}</th>
           `)}
         </tr>
       </thead>
@@ -88,7 +88,7 @@ class NegaDataTable extends LitElement {
       ${this.items.map((item, rowIndex) => html`
       <tr .item=${item} part="row ${rowIndex % 2 ? 'even-row' : 'odd-row'}" @click=${this._handleClickRow.bind(this)}>
         ${Array.from(this.columns).map((column, colIndex) => html`
-        <td part="cell ${colIndex % 2 ? 'even-cell' : 'odd-cell'}">
+        <td part="cell ${colIndex % 2 ? 'even-column' : 'odd-column'}">
         ${this.renderColumnCell(column, item)}
         </td>
         `)}
