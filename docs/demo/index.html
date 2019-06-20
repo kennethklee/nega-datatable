@@ -49,31 +49,8 @@ window.customElements.define('special-nega-column', SpecialNegaColumn);</script>
 
     </head><custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
-        nega-datatable#complex {
-          --nega-datatable-selected-row: {
-            background: rgba(0, 0, 255, 0.2);
-          }
-        }
-
-        nega-datatable#styled {
-          --nega-datatable-header-row: {
-            background: rgba(0, 0, 0, 0.05);
-          }
-
-          --nega-datatable-header-cell: {
-            font-size: 18px;
-            text-align: left;
-            text-transform: capitalize;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-            user-select: none;
-          }
-
-          --nega-datatable-even-row: {
-            background: rgba(0, 0, 0, 0.05)
-          }
-          --nega-datatable-even-column: {
-            background: rgba(0, 0, 0, 0.05)
-          }
+        nega-datatable::part(selected-row) {
+          background: rgba(0, 0, 255, 0.2);
         }
       </style>
     </custom-style>
@@ -188,25 +165,24 @@ window.customElements.define('special-nega-column', SpecialNegaColumn);</script>
       <demo-snippet>
         <template>
           <style>
-            nega-datatable#styled {
-              --nega-datatable-header-row: {
-                background: rgba(0, 0, 0, 0.05);
-              }
+            nega-datatable#styled::part(header-row) {
+              background: rgba(0, 0, 0, 0.05);
+            }
 
-              --nega-datatable-header-cell: {
-                font-size: 18px;
-                text-align: left;
-                text-transform: capitalize;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-                user-select: none;
-              }
+            nega-datatable#styled::part(header-cell) {
+              font-size: 18px;
+              text-align: left;
+              text-transform: capitalize;
+              border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+              user-select: none;
+            }
 
-              --nega-datatable-even-row: {
-                background: rgba(0, 0, 0, 0.05)
-              }
-              --nega-datatable-even-column: {
-                background: rgba(0, 0, 0, 0.05)
-              }
+            nega-datatable#styled::part(even-cell) {
+              background: rgba(0, 0, 0, 0.05);
+            }
+
+            nega-datatable#styled::part(even-row) {
+              background: rgba(0, 0, 0, 0.05);
             }
           </style>
 

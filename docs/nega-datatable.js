@@ -17,17 +17,17 @@ Example:
 Basic table: <nega-datatable><span slot="name"></span></nega-datatable>
 ```
 
-The following custom properties and mixins are also available for styling:
-Custom property | Description | Default
-----------------|-------------|----------
-`--nega-datatable-header-row` | Mixin for header TR | `{}`
-`--nega-datatable-header-cell` | Mixin for header TH | `{}`
-`--nega-datatable-even-row` | Mixin for even TR | `{}`
-`--nega-datatable-odd-row` | Mixin for odd TR | `{}`
-`--nega-datatable-selected-row` | Mixin for selected TR | `{}`
-`--nega-datatable-even-column` | Mixin for even TD | `{}`
-`--nega-datatable-odd-column` | Mixin for odd TD | `{}`
-`--nega-datatable-cell` | Mixin for body TD | `{}`
+The following CSS ::parts are available for styling:
+
+* header-row
+* header-cell
+* even-row
+* odd-row
+* selected-row
+* row
+* even-cell
+* odd-cell
+* cell
 
 @element nega-datatable
 @demo demo/index.html
@@ -71,65 +71,23 @@ class NegaDataTable extends LitElement {
   render() {
     return html`
     <style>
-      :host {
-        --nega-datatable-header-row: {};
-        --nega-datatable-header-cell: {};
-        --nega-datatable-even-row: {};
-        --nega-datatable-odd-row: {};
-        --nega-datatable-selected-row: {};
-        --nega-datatable-even-column: {};
-        --nega-datatable-odd-column: {};
-        --nega-datatable-cell: {};
-      }
-
       table {
         width: 100%;
-      }
-
-      tbody > tr:nth-child(even) {
-        @apply --nega-datatable-even-row;
-      }
-
-      tbody > tr:nth-child(odd) {
-        @apply --nega-datatable-odd-row;
-      }
-
-      tbody > tr[selected] {
-        @apply --nega-datatable-selected-row;
-      }
-
-      tbody td.odd {
-        @apply --nega-datatable-odd-column;
-      }
-      tbody td.even {
-        @apply --nega-datatable-even-column;
-      }
-
-      th {
-        @apply --nega-datatable-header-cell;
-      }
-
-      thead > tr {
-        @apply --nega-datatable-header-row;
-      }
-
-      tbody td {
-        @apply --nega-datatable-cell;
       }
     </style>
     <table border="0" cellspacing="0">
       <thead>
-        <tr>
+        <tr part="header-row">
           ${Array.from(this.columns).map(column => html`
-          <th>${this.renderColumnHeader(column)}</th>
+          <th part="header-cell">${this.renderColumnHeader(column)}</th>
           `)}
         </tr>
       </thead>
       <tbody>
-      ${this.items.map(item => html`
-      <tr .item=${item} @click=${this._handleClickRow.bind(this)}>
-        ${Array.from(this.columns).map((column, index) => html`
-        <td class="${index % 2 ? 'even' : 'odd'}">
+      ${this.items.map((item, rowIndex) => html`
+      <tr .item=${item} part="row ${rowIndex % 2 ? 'even-row' : 'odd-row'}" @click=${this._handleClickRow.bind(this)}>
+        ${Array.from(this.columns).map((column, colIndex) => html`
+        <td part="cell ${colIndex % 2 ? 'even-cell' : 'odd-cell'}">
         ${this.renderColumnCell(column, item)}
         </td>
         `)}
@@ -192,6 +150,7 @@ class NegaDataTable extends LitElement {
     for (const el of this.shadowRoot.querySelector('tbody').children) {
       if (el.item === item) {
         el.toggleAttribute('selected', forceValue);
+        el.part.toggle('selected-row', forceValue);
         this.dispatchEvent(new CustomEvent('select', {
           detail: {
             item: item,
