@@ -25,9 +25,31 @@ The following CSS ::parts are available for styling:
 * odd-row
 * selected-row
 * row
-* even-cell
-* odd-cell
+* even-column
+* odd-column
 * cell
+
+The following custom properties and mixins are also available for styling:
+Custom property | Description | Default
+----------------|-------------|----------
+`--nega-datatable-header-row` | Mixin for header TR | `{}`
+`--nega-datatable-header-cell` | Mixin for header TH | `{}`
+`--nega-datatable-even-row` | Mixin for even TR | `{}`
+`--nega-datatable-odd-row` | Mixin for odd TR | `{}`
+`--nega-datatable-selected-row` | Mixin for selected TR | `{}`
+`--nega-datatable-even-column` | Mixin for even TD | `{}`
+`--nega-datatable-odd-column` | Mixin for odd TD | `{}`
+`--nega-datatable-cell` | Mixin for body TD | `{}`
+`--nega-datatable-header-cell-padding` | Header cell padding | `initial`
+`--nega-datatable-header-cell-white-space` | Header cell white-space | `nowrap`
+`--nega-datatable-even-row-background` | Even row background | `initial`
+`--nega-datatable-odd-row-background` | Odd row background | `initial`
+`--nega-datatable-selected-row-background` | Selected row background | `initial`
+`--nega-datatable-even-column-background` | Even column background | `initial`
+`--nega-datatable-odd-column-background` | Odd row background | `initial`
+`--nega-datatable-cell-padding` | Cell padding | `initial`
+`--nega-datatable-cell-white-space` | Cell white-space | `initial`
+`--nega-datatable-cell-vertical-align` | Cell vertical-align | `inherit`
 
 @element nega-datatable
 @demo demo/index.html
@@ -71,15 +93,79 @@ class NegaDataTable extends LitElement {
   render() {
     return html`
     <style>
+      :host {
+        --nega-datatable-header-row: {};
+        --nega-datatable-header-cell: {};
+        --nega-datatable-even-row: {};
+        --nega-datatable-odd-row: {};
+        --nega-datatable-selected-row: {};
+        --nega-datatable-even-column: {};
+        --nega-datatable-odd-column: {};
+        --nega-datatable-cell: {};
+
+        --nega-datatable-header-cell-padding: initial;
+        --nega-datatable-header-cell-white-space: nowrap;
+        --nega-datatable-even-row-background: initial;
+        --nega-datatable-odd-row-background: initial;
+        --nega-datatable-selected-row-background: initial;
+        --nega-datatable-even-column-background: initial;
+        --nega-datatable-odd-column-background: initial;
+        --nega-datatable-cell-padding: initial;
+        --nega-datatable-cell-white-space: initial;
+        --nega-datatable-cell-vertical-align: inherit;
+      }
+
       table {
         width: 100%;
+      }
+
+      th {
+        text-align: left;
+        text-transform: capitalize;
+        white-space: nowrap;
+      }
+
+      thead > tr {
+        @apply --nega-datatable-header-row;
+      }
+      th {
+        padding: var(--nega-datatable-header-cell-padding);
+        white-space: var(--nega-datatable-header-cell-white-space);
+        @apply --nega-datatable-header-cell;
+      }
+      tbody > tr:nth-child(even) {
+        background: var(--nega-datatable-even-row-background);
+        @apply --nega-datatable-even-row;
+      }
+      tbody > tr:nth-child(odd) {
+        background: var(--nega-datatable-odd-row-background);
+        @apply --nega-datatable-odd-row;
+      }
+      tbody > tr[selected] {
+        background: var(--nega-datatable-selected-row-background);
+        @apply --nega-datatable-selected-row;
+      }
+      td[part~=even-column] {
+        background: var(--nega-datatable-even-column-background);
+        @apply --nega-datatable-even-column;
+      }
+      td[part~=odd-column] {
+        background: var(--nega-datatable-odd-column-background);
+        @apply --nega-datatable-odd-column;
+      }
+      td {
+        padding: var(--nega-datatable-cell-padding);
+        white-space: var(--nega-datatable-cell-white-space);
+        vertical-align: var(--nega-datatable-cell-vertical-align);
+
+        @apply --nega-datatable-cell;
       }
     </style>
     <table border="0" cellspacing="0">
       <thead>
         <tr part="header-row">
-          ${Array.from(this.columns).map(column => html`
-          <th part="header-cell">${this.renderColumnHeader(column)}</th>
+          ${Array.from(this.columns).map((column, colIndex) => html`
+          <th part="header-cell ${colIndex % 2 ? 'even-column' : 'odd-column'}">${this.renderColumnHeader(column)}</th>
           `)}
         </tr>
       </thead>
@@ -87,7 +173,7 @@ class NegaDataTable extends LitElement {
       ${this.items.map((item, rowIndex) => html`
       <tr .item=${item} part="row ${rowIndex % 2 ? 'even-row' : 'odd-row'}" @click=${this._handleClickRow.bind(this)}>
         ${Array.from(this.columns).map((column, colIndex) => html`
-        <td part="cell ${colIndex % 2 ? 'even-cell' : 'odd-cell'}">
+        <td part="cell ${colIndex % 2 ? 'even-column' : 'odd-column'}">
         ${this.renderColumnCell(column, item)}
         </td>
         `)}
