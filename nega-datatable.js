@@ -215,7 +215,7 @@ class NegaDataTable extends LitElement {
   }
 
   _handleClickRow(ev) {
-    this.dispatchEvent(new CustomEvent('clickItem', {detail: {value: ev.target.closest('tr').item, target: ev.target}}))
+    this.dispatchEvent(new CustomEvent('clickItem', {detail: {value: ev.target.closest('tr').item, target: ev.target}, composed: true, bubbles: true}))
   }
 
   select(item) {
