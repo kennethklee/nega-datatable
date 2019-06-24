@@ -146,11 +146,11 @@ class NegaDataTable extends LitElement {
         background: var(--nega-datatable-selected-row-background);
         @apply --nega-datatable-selected-row;
       }
-      td[part~=even-column] {
+      [part~=even-column] {
         background: var(--nega-datatable-even-column-background);
         @apply --nega-datatable-even-column;
       }
-      td[part~=odd-column] {
+      [part~=odd-column] {
         background: var(--nega-datatable-odd-column-background);
         @apply --nega-datatable-odd-column;
       }
