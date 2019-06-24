@@ -1,6 +1,6 @@
 {
   "name": "nega-datatable",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Simple data table webcomponent",
   "main": "nega-datatable.js",
   "scripts": {
