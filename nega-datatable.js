@@ -212,7 +212,7 @@ class NegaDataTable extends LitElement {
     // given a property, auto populate cell
     if (el.hasAttribute('slot') && el.getAttribute('slot')) {  
       if (el.hasAttribute('slot-prop')) {
-        el.setAttribute(el.getAttribute('slot-prop')) = item[el.getAttribute('slot')] || ''
+        el.setAttribute(el.getAttribute('slot-prop'), item[el.getAttribute('slot')] || '')
       } else {
         el.innerText = item[el.getAttribute('slot')] || ''
       }
