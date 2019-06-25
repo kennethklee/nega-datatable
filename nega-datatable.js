@@ -227,8 +227,8 @@ class NegaDataTable extends LitElement {
 
   updated(changed) {
     if (changed.has('items')) {
-      // Deselect all
-      Array.from(this.shadowRoot.querySelector('tbody').children).forEach(el => this._deselectRow(el))
+      // Deselect all when items have changed
+      this.clear()
     }
   }
 
@@ -251,6 +251,10 @@ class NegaDataTable extends LitElement {
         return !isSelected
       }
     }
+  }
+
+  clear() {
+    Array.from(this.shadowRoot.querySelector('tbody').children).forEach(el => this._deselectRow(el))
   }
 
   _selectRow(rowEl) {
