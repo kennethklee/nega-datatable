@@ -85,7 +85,7 @@ class NegaDataTable extends LitElement {
         this.columns.push(element)
       }
 
-      if (element.hasAttribute('nega-title') && element.getAttribute('nega-title')) {
+      if (element.hasAttribute('nega-title')) {
         element['nega-title'] = element.getAttribute('nega-title')
       } else if (element.hasAttribute('slot') && element.getAttribute('slot')) {
         element['nega-title'] = element.getAttribute('slot')
