@@ -237,7 +237,17 @@ class NegaDataTable extends LitElement {
     for (const el of this.shadowRoot.querySelector('tbody').children) {
       if (el.item === item) {
         el.toggleAttribute('selected', forceValue)
-        el.part.toggle('selected-row', forceValue)
+        // TODO uncomment when more widespread
+        // el.part.toggle('selected-row', forceValue)
+        // TODO delete when above is more widespread
+        var part = new Set(el.getAttribute('part').split(' '))
+        if (part.has('selected-row')) {
+          part.delete('selected-row')
+        } else {
+          part.add('selected-row')
+        }
+        el.setAttribute('part', Array.from(part).join(' '))
+        
         this.dispatchEvent(new CustomEvent('select', {detail: {item: item, value: el.hasAttribute('selected')}, composed: true, bubbles: true}))
 
         return el.hasAttribute('selected')
