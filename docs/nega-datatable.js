@@ -40,6 +40,7 @@ Custom property | Description | Default
 `--nega-datatable-even-column` | Mixin for even TD | `{}`
 `--nega-datatable-odd-column` | Mixin for odd TD | `{}`
 `--nega-datatable-cell` | Mixin for body TD | `{}`
+`--nega-datatable-header-cell-color` | Header cell padding | `inherit`
 `--nega-datatable-header-cell-padding` | Header cell padding | `initial`
 `--nega-datatable-header-cell-white-space` | Header cell white-space | `nowrap`
 `--nega-datatable-even-row-background` | Even row background | `initial`
@@ -47,6 +48,7 @@ Custom property | Description | Default
 `--nega-datatable-selected-row-background` | Selected row background | `initial`
 `--nega-datatable-even-column-background` | Even column background | `initial`
 `--nega-datatable-odd-column-background` | Odd row background | `initial`
+`--nega-datatable-cell-color` | Cell padding | `inherit`
 `--nega-datatable-cell-padding` | Cell padding | `initial`
 `--nega-datatable-cell-white-space` | Cell white-space | `initial`
 `--nega-datatable-cell-vertical-align` | Cell vertical-align | `inherit`
@@ -103,6 +105,7 @@ class NegaDataTable extends LitElement {
         --nega-datatable-odd-column: {};
         --nega-datatable-cell: {};
 
+        --nega-datatable-header-cell-color: inherit;
         --nega-datatable-header-cell-padding: initial;
         --nega-datatable-header-cell-white-space: nowrap;
         --nega-datatable-even-row-background: initial;
@@ -110,6 +113,7 @@ class NegaDataTable extends LitElement {
         --nega-datatable-selected-row-background: initial;
         --nega-datatable-even-column-background: initial;
         --nega-datatable-odd-column-background: initial;
+        --nega-datatable-cell-color: inherit;
         --nega-datatable-cell-padding: initial;
         --nega-datatable-cell-white-space: initial;
         --nega-datatable-cell-vertical-align: inherit;
@@ -125,10 +129,12 @@ class NegaDataTable extends LitElement {
         white-space: nowrap;
       }
 
+
       thead > tr {
         @apply --nega-datatable-header-row;
       }
       th {
+        color: var(--nega-datatable-header-cell-color);
         padding: var(--nega-datatable-header-cell-padding);
         white-space: var(--nega-datatable-header-cell-white-space);
         @apply --nega-datatable-header-cell;
@@ -145,15 +151,16 @@ class NegaDataTable extends LitElement {
         background: var(--nega-datatable-selected-row-background);
         @apply --nega-datatable-selected-row;
       }
-      td[part~=even-column] {
+      [part~=even-column] {
         background: var(--nega-datatable-even-column-background);
         @apply --nega-datatable-even-column;
       }
-      td[part~=odd-column] {
+      [part~=odd-column] {
         background: var(--nega-datatable-odd-column-background);
         @apply --nega-datatable-odd-column;
       }
       td {
+        color: var(--nega-datatable-cell-color);
         padding: var(--nega-datatable-cell-padding);
         white-space: var(--nega-datatable-cell-white-space);
         vertical-align: var(--nega-datatable-cell-vertical-align);
@@ -220,7 +227,9 @@ class NegaDataTable extends LitElement {
       detail: {
         value: ev.target.closest('tr').item,
         target: ev.target
-      }
+      },
+      composed: true,
+      bubbles: true
     }));
   }
 

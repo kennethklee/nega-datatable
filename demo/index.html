@@ -60,6 +60,7 @@
             background: rgba(0, 0, 0, 0.05);
           };
           --nega-datatable-header-cell: {
+            color: navy;
             font-size: 18px;
             text-align: left;
             text-transform: capitalize;
@@ -72,6 +73,7 @@
           --nega-datatable-even-column: {
             background: rgba(0, 0, 0, 0.05)
           };
+          --nega-datatable-cell-color: darkslategrey;
         }
       </style>
     </custom-style>
@@ -192,6 +194,7 @@
 
             nega-datatable#styled::part(header-cell) {
               font-size: 18px;
+              color: navy;
               text-align: left;
               text-transform: capitalize;
               border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -204,6 +207,10 @@
 
             nega-datatable#styled::part(even-row) {
               background: rgba(0, 0, 0, 0.05);
+            }
+
+            nega-datatable#styled::part(cell) {
+              color: darkslategrey;
             }
           </style>
 
