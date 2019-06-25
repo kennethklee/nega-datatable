@@ -195,7 +195,7 @@ class NegaDataTable extends LitElement {
   renderColumnHeader(column) {
     var path = column.hasAttribute('slot') && column.getAttribute('slot') || ''
     if (path && this.querySelector(`[slot="${path}:header"]`)) {
-      return this.querySelector(`[slot="${path}:header"]`)
+      return this.querySelector(`[slot="${path}:header"]`).cloneNode(true)
     }
 
     return html`
@@ -225,6 +225,13 @@ class NegaDataTable extends LitElement {
     this.dispatchEvent(new CustomEvent('clickItem', {detail: {value: ev.target.closest('tr').item, target: ev.target}, composed: true, bubbles: true}))
   }
 
+  updated(changed) {
+    if (changed.has('items')) {
+      // Deselect all
+      Array.from(this.shadowRoot.querySelector('tbody').children).forEach(el => this._deselectRow(el))
+    }
+  }
+
   select(item) {
     return this.toggle(item, true)
   }
@@ -236,23 +243,28 @@ class NegaDataTable extends LitElement {
   toggle(item, forceValue) {
     for (const el of this.shadowRoot.querySelector('tbody').children) {
       if (el.item === item) {
-        el.toggleAttribute('selected', forceValue)
-        // TODO uncomment when more widespread
-        // el.part.toggle('selected-row', forceValue)
-        // TODO delete when above is more widespread
-        var part = new Set(el.getAttribute('part').split(' '))
-        if (part.has('selected-row')) {
-          part.delete('selected-row')
-        } else {
-          part.add('selected-row')
-        }
-        el.setAttribute('part', Array.from(part).join(' '))
+        var isSelected = el.hasAttribute('selected')
+        isSelected ? this._deselectRow(el) : this._selectRow(el)
         
-        this.dispatchEvent(new CustomEvent('select', {detail: {item: item, value: el.hasAttribute('selected')}, composed: true, bubbles: true}))
+        this.dispatchEvent(new CustomEvent('select', {detail: {item: item, value: !isSelected}, composed: true, bubbles: true}))
 
-        return el.hasAttribute('selected')
+        return !isSelected
       }
     }
+  }
+
+  _selectRow(rowEl) {
+    var part = new Set(rowEl.getAttribute('part').split(' '))
+    part.add('selected-row')
+    rowEl.setAttribute('part', Array.from(part).join(' '))
+    rowEl.setAttribute('selected', '')
+  }
+
+  _deselectRow(rowEl) {
+    var part = new Set(rowEl.getAttribute('part').split(' '))
+    part.delete('selected-row')
+    rowEl.setAttribute('part', Array.from(part).join(' '))
+    rowEl.removeAttribute('selected')
   }
 
   get selected() {
