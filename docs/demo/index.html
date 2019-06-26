@@ -15,10 +15,14 @@ class CheckboxColumn extends LitElement {
   render() {
     return html`
             <label>
-              <input type="checkbox" />
+              <input type="checkbox" @click=${this._handleClick}/>
               <span><slot></slot></span>
             </label>
             `;
+  }
+
+  _handleClick(ev) {
+    ev.stopPropagation(); // Prevent checkbox changes from triggering a click event
   }
 
 }
@@ -123,13 +127,15 @@ window.customElements.define('special-nega-column', SpecialNegaColumn);</script>
               render() {
                 return html`
                   <label>
-                    <input type="checkbox" />
+                    <input type="checkbox" @click=${this._handleClick}/>
                     <span><slot></slot></span>
                   </label>
                   `
               }
+              _handleClick(ev) {
+                ev.stopPropagation() // Prevent checkbox changes from triggering a click event
+              }
             }
-            window.customElements.define('checkbox-column', CheckboxColumn)
 
             class SpecialNegaColumn extends LitElement {
               constructor() {
@@ -155,7 +161,7 @@ window.customElements.define('special-nega-column', SpecialNegaColumn);</script>
             <input slot="id" slot-prop="value" type="checkbox">
 
             <span slot="name:header">Child's Name</span>
-            <span slot="name"></span>
+            <input type="text" slot="name" slot-attr="value">
 
             <span slot="mixed-data:header">Age</span>
             <special-nega-column slot="mixed-data"></special-nega-column>
@@ -166,7 +172,9 @@ window.customElements.define('special-nega-column', SpecialNegaColumn);</script>
           <script>
             var complexElement = document.getElementById('complex')
             complexElement.addEventListener('clickItem', function (ev) {
-              if (ev.target.tagName === 'CHECKBOX-COLUMN') return;  // Ignore the checkbox column
+              console.log(ev.detail.target.tagName)
+              if (ev.detail.target.slot === 'likes') return;  // Ignore the likes checkbox column
+              if (ev.detail.target.slot === 'name') return;  // Ignore the name input column
 
               complexElement.toggle(ev.detail.value)
             })

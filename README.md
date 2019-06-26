@@ -1,7 +1,7 @@
 # nega-datatable
 # \<nega-datatable\>
 
-Data table webcomponent
+Simple Data table webcomponent
 
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/kennethklee/nega-datatable)
 

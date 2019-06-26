@@ -48,6 +48,7 @@
           <span slot="name:header">Name</span>
           <span slot="name"></span>
 
+          <input type="text" disabled slot="bestFriend" slot-attr="value" />
           <input type="checkbox" slot="check" slot-prop="checked" />
         </nega-datatable>
       </template>
@@ -73,21 +74,25 @@
           const element = fixture('ColumnTestFixture')
 
           element.items = [
-            {name: 'alice', check: true},
-            {name: 'bob', check: false},
+            {name: 'alice', bestFriend: 'rick', check: true},
+            {name: 'bob', bestFriend: 'sasha', check: false},
           ]
 
           await element.updateComplete
 
-          expect(element.shadowRoot.querySelector('thead > tr').children.length).to.equal(2)  // 2 headers
+          expect(element.shadowRoot.querySelector('thead > tr').children.length).to.equal(3)  // 2 headers
           expect(element.shadowRoot.querySelector('thead').children[0].children[0].innerText).to.equal('Name')
-          expect(element.shadowRoot.querySelector('thead').children[0].children[1].innerText).to.equal('check')
+          expect(element.shadowRoot.querySelector('thead').children[0].children[1].innerText).to.equal('BestFriend')
+          expect(element.shadowRoot.querySelector('thead').children[0].children[2].innerText).to.equal('Check')
           
-          expect(element.shadowRoot.querySelector('tbody').children.length).to.equal(2) // 2 data cells
-          expect(element.shadowRoot.querySelector('tbody').children[0].children[0].innerText).to.equal('alice')
-          expect(element.shadowRoot.querySelector('tbody').children[0].children[1].firstElementChild.checked).to.be.true
-          expect(element.shadowRoot.querySelector('tbody').children[1].children[0].innerText).to.equal('bob')
-          expect(element.shadowRoot.querySelector('tbody').children[1].children[1].firstElementChild.checked).to.be.false
+          var rowElList = element.shadowRoot.querySelector('tbody').children
+          expect(rowElList.length).to.equal(2) // 2 data rows
+          expect(rowElList[0].children[0].innerText).to.equal('alice')
+          expect(rowElList[0].children[1].firstElementChild.value).to.equal('rick')
+          expect(rowElList[0].children[2].firstElementChild.checked).to.be.true
+          expect(rowElList[1].children[0].innerText).to.equal('bob')
+          expect(rowElList[1].children[1].firstElementChild.value).to.equal('sasha')
+          expect(rowElList[1].children[2].firstElementChild.checked).to.be.false
         })
 
         it('works with `negaItems` property', async () => {

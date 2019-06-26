@@ -84,7 +84,7 @@ class NegaDataTable extends LitElement {
         this.columns.push(element);
       }
 
-      if (element.hasAttribute('nega-title') && element.getAttribute('nega-title')) {
+      if (element.hasAttribute('nega-title')) {
         element['nega-title'] = element.getAttribute('nega-title');
       } else if (element.hasAttribute('slot') && element.getAttribute('slot')) {
         element['nega-title'] = element.getAttribute('slot');
@@ -195,7 +195,7 @@ class NegaDataTable extends LitElement {
     var path = column.hasAttribute('slot') && column.getAttribute('slot') || '';
 
     if (path && this.querySelector(`[slot="${path}:header"]`)) {
-      return this.querySelector(`[slot="${path}:header"]`);
+      return this.querySelector(`[slot="${path}:header"]`).cloneNode(true);
     }
 
     return html`
@@ -212,9 +212,19 @@ class NegaDataTable extends LitElement {
 
 
     if (el.hasAttribute('slot') && el.getAttribute('slot')) {
+      var isValueSet = false;
+
+      if (el.hasAttribute('slot-attr')) {
+        el.setAttribute(el.getAttribute('slot-attr'), item[el.getAttribute('slot')] || '');
+        isValueSet = true;
+      }
+
       if (el.hasAttribute('slot-prop')) {
         el[el.getAttribute('slot-prop')] = item[el.getAttribute('slot')] || '';
-      } else {
+        isValueSet = true;
+      }
+
+      if (!isValueSet) {
         el.innerText = item[el.getAttribute('slot')] || '';
       }
     }
@@ -223,6 +233,8 @@ class NegaDataTable extends LitElement {
   }
 
   _handleClickRow(ev) {
+    ev.stopPropagation();
+    ev.stopImmediatePropagation();
     this.dispatchEvent(new CustomEvent('clickItem', {
       detail: {
         value: ev.target.closest('tr').item,
@@ -231,6 +243,13 @@ class NegaDataTable extends LitElement {
       composed: true,
       bubbles: true
     }));
+  }
+
+  updated(changed) {
+    if (changed.has('items')) {
+      // Deselect all when items have changed
+      this.clear();
+    }
   }
 
   select(item) {
@@ -244,19 +263,37 @@ class NegaDataTable extends LitElement {
   toggle(item, forceValue) {
     for (const el of this.shadowRoot.querySelector('tbody').children) {
       if (el.item === item) {
-        el.toggleAttribute('selected', forceValue);
-        el.part.toggle('selected-row', forceValue);
+        var isSelected = el.hasAttribute('selected');
+        isSelected ? this._deselectRow(el) : this._selectRow(el);
         this.dispatchEvent(new CustomEvent('select', {
           detail: {
             item: item,
-            value: el.hasAttribute('selected')
+            value: !isSelected
           },
           composed: true,
           bubbles: true
         }));
-        return el.hasAttribute('selected');
+        return !isSelected;
       }
     }
+  }
+
+  clear() {
+    Array.from(this.shadowRoot.querySelector('tbody').children).forEach(el => this._deselectRow(el));
+  }
+
+  _selectRow(rowEl) {
+    var part = new Set(rowEl.getAttribute('part').split(' '));
+    part.add('selected-row');
+    rowEl.setAttribute('part', Array.from(part).join(' '));
+    rowEl.setAttribute('selected', '');
+  }
+
+  _deselectRow(rowEl) {
+    var part = new Set(rowEl.getAttribute('part').split(' '));
+    part.delete('selected-row');
+    rowEl.setAttribute('part', Array.from(part).join(' '));
+    rowEl.removeAttribute('selected');
   }
 
   get selected() {

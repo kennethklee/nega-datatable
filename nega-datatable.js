@@ -1,12 +1,11 @@
 import {LitElement, html} from 'lit-element'
 
 /**
-`nega-datatable`
-Simple data table component.
+`nega-datatable` is a simple data table webcomponent.
 
 Slotted elements define headers and columns. Data is populated by the `items` property.
 
-The element's `slot` attribute directly coresponds to the item key. The `innerText` is populated by the cell value unless there is a `slot-prop` attribute to signal which element attribute to fill.
+The element's `slot` attribute directly coresponds to the item key. The `innerText` is populated by the cell value unless there is a `slot-prop` property or `slot-attr` property to signal which element property/attribute to fill.
 
 Slots postfixed with `:header` defines the header element. Without one, the slot name is used, or `nega-title` attribute if provided.
 
@@ -57,7 +56,6 @@ Custom property | Description | Default
 @element nega-datatable
 @demo demo/index.html
 */
-
 class NegaDataTable extends LitElement {
   static get properties() {
     return {
@@ -210,10 +208,18 @@ class NegaDataTable extends LitElement {
     }
 
     // given a property, auto populate cell
-    if (el.hasAttribute('slot') && el.getAttribute('slot')) {  
+    if (el.hasAttribute('slot') && el.getAttribute('slot')) {
+      var isValueSet = false
+      if (el.hasAttribute('slot-attr')) {
+        el.setAttribute(el.getAttribute('slot-attr'), item[el.getAttribute('slot')] || '')
+        isValueSet = true
+      } 
       if (el.hasAttribute('slot-prop')) {
-        el.setAttribute(el.getAttribute('slot-prop'), item[el.getAttribute('slot')] || '')
-      } else {
+        el[el.getAttribute('slot-prop')] = item[el.getAttribute('slot')] || ''
+        isValueSet = true
+      }
+      
+      if (!isValueSet) {
         el.innerText = item[el.getAttribute('slot')] || ''
       }
     }
@@ -222,6 +228,8 @@ class NegaDataTable extends LitElement {
   }
 
   _handleClickRow(ev) {
+    ev.stopPropagation()
+    ev.stopImmediatePropagation()
     this.dispatchEvent(new CustomEvent('clickItem', {detail: {value: ev.target.closest('tr').item, target: ev.target}, composed: true, bubbles: true}))
   }
 
