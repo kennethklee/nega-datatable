@@ -30,6 +30,7 @@ The following CSS ::parts are available for styling:
 * cell
 
 The following custom properties and mixins are also available for styling:
+
 Custom property | Description | Default
 ----------------|-------------|----------
 `--nega-datatable-header-row` | Mixin for header TR | `{}`
