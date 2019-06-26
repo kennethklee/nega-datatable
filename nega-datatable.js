@@ -252,12 +252,12 @@ class NegaDataTable extends LitElement {
   toggle(item, forceValue) {
     for (const el of this.shadowRoot.querySelector('tbody').children) {
       if (el.item === item) {
-        var isSelected = el.hasAttribute('selected')
-        isSelected ? this._deselectRow(el) : this._selectRow(el)
+        var isSelected = forceValue === undefined ? !el.hasAttribute('selected') : forceValue
+        isSelected ? this._selectRow(el) : this._deselectRow(el)
         
-        this.dispatchEvent(new CustomEvent('select', {detail: {item: item, value: !isSelected}, composed: true, bubbles: true}))
+        this.dispatchEvent(new CustomEvent('select', {detail: {item: item, value: isSelected}, composed: true, bubbles: true}))
 
-        return !isSelected
+        return isSelected
       }
     }
   }
