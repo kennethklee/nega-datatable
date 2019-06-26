@@ -1,11 +1,10 @@
 import { LitElement, html } from "./node_modules/lit-element/lit-element.js";
 /**
-`nega-datatable`
-Simple data table component.
+`nega-datatable` is a simple data table webcomponent.
 
 Slotted elements define headers and columns. Data is populated by the `items` property.
 
-The element's `slot` attribute directly coresponds to the item key. The `innerText` is populated by the cell value unless there is a `slot-prop` attribute to signal which element attribute to fill.
+The element's `slot` attribute directly coresponds to the item key. The `innerText` is populated by the cell value unless there is a `slot-prop` property or `slot-attr` property to signal which element property/attribute to fill.
 
 Slots postfixed with `:header` defines the header element. Without one, the slot name is used, or `nega-title` attribute if provided.
 
@@ -30,6 +29,7 @@ The following CSS ::parts are available for styling:
 * cell
 
 The following custom properties and mixins are also available for styling:
+
 Custom property | Description | Default
 ----------------|-------------|----------
 `--nega-datatable-header-row` | Mixin for header TR | `{}`
@@ -263,17 +263,17 @@ class NegaDataTable extends LitElement {
   toggle(item, forceValue) {
     for (const el of this.shadowRoot.querySelector('tbody').children) {
       if (el.item === item) {
-        var isSelected = el.hasAttribute('selected');
-        isSelected ? this._deselectRow(el) : this._selectRow(el);
+        var isSelected = forceValue === undefined ? !el.hasAttribute('selected') : forceValue;
+        isSelected ? this._selectRow(el) : this._deselectRow(el);
         this.dispatchEvent(new CustomEvent('select', {
           detail: {
             item: item,
-            value: !isSelected
+            value: isSelected
           },
           composed: true,
           bubbles: true
         }));
-        return !isSelected;
+        return isSelected;
       }
     }
   }

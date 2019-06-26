@@ -147,6 +147,15 @@
             element.deselect(element.items[0])
           }))
           .then(() => new Promise((resolve, reject) => {
+            // Deselect row repeated
+            element.addEventListener('select', (ev) => {
+              expect(ev.detail.value).to.be.false
+              resolve()
+            }, {once: true})
+            
+            element.deselect(element.items[0])
+          }))
+          .then(() => new Promise((resolve, reject) => {
             // Toggle row
             element.addEventListener('select', (ev) => {
               expect(ev.detail.value).to.be.true
@@ -154,8 +163,13 @@
             }, {once: true})
             
             element.toggle(element.items[0])
+            expect(element.selected.length).to.equal(1) // We left 1 selected
           }))
-          .then(() => done())
+          .then(() => {
+            element.clear()
+            expect(element.selected.length).to.equal(0)
+            done()
+          })
         })
       })
     </script>
