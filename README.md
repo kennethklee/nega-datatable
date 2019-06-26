@@ -27,7 +27,15 @@ npm install --save nega-datatable
     </script>
   </head>
   <body>
-    <nega-datatable></nega-datatable>
+    <nega-datatable>
+      <span slot="name"></span>
+    </nega-datatable>
+    <script>
+      // Fill table with data
+      document.querySelector('nega-datatable').items = [
+        {name: 'Kenneth'}
+      ]
+    </script>
   </body>
 </html>
 ```
@@ -39,9 +47,16 @@ import {PolymerElement, html} from '@polymer/polymer';
 import 'nega-datatable/nega-datatable.js';
 
 class SampleElement extends PolymerElement {
+  static get properties() {
+    return {
+      items: Array
+    }
+  }
   static get template() {
     return html`
-        <nega-datatable></nega-datatable>
+      <nega-datatable items={{items}}>
+        <span slot="name"></span>
+      </nega-datatable>
     `;
   }
 }
