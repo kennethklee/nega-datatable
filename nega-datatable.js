@@ -167,7 +167,15 @@ class NegaDataTable extends LitElement {
 
         @apply --nega-datatable-cell;
       }
+      [template] {
+        display: none;
+      }
     </style>
+
+    <div template>
+      <slot id="template"></slot>
+    </div>
+
     <table border="0" cellspacing="0">
       <thead>
         <tr part="header-row">
@@ -232,6 +240,15 @@ class NegaDataTable extends LitElement {
     ev.stopPropagation()
     ev.stopImmediatePropagation()
     this.dispatchEvent(new CustomEvent('clickItem', {detail: {value: ev.target.closest('tr').item, target: ev.target}, composed: true, bubbles: true}))
+  }
+
+  _handleSlotChange(ev) {
+    this._preprocess()
+    this.performUpdate()
+  }
+
+  firstUpdated() {
+    this.shadowRoot.querySelector('slot').addEventListener('slotchange', this._handleSlotChange.bind(this))
   }
 
   updated(changed) {
